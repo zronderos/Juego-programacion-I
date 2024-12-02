@@ -1,0 +1,107 @@
+import pygame
+import pygame.mixer as mixer
+import constantes
+import Buzo
+import tiburon 
+import moneda
+
+
+
+
+#Inicializo la biblioteca
+
+pygame.init()
+pygame.mixer.init()
+
+flag_moneda = True
+
+
+#Creo la pantalla
+pantalla = pygame.display.set_mode((constantes.ANCHO_VENTANA , constantes.ALTO_VENTANA))
+#Cambio el nombre de mi pantalla
+pygame.display.set_caption("¡Esquiva a los Tiburones!")
+
+#Creo un reloj que regule la tasa de imagenes por segundo (FPS)
+clock = pygame.time.Clock()
+FPS = 60
+
+#Creo mi personaje BUZO
+personaje_buzo = Buzo.crear_personaje(70,50,90,90)
+
+#Creo mi personaje Tiburon
+villano_tiburon = tiburon.crear_personaje(300,80,45,45)
+
+#Creamos las monedas
+coin = moneda.crear_personaje(300,400,25,25)
+
+
+#Cargamos fondo de pantalla
+fondo_img = pygame.image.load('fondo_mar.jpeg').convert()
+x = 0
+#Musica Fondo
+mixer.music.load('musica_fondo.wav')
+mixer.music.set_volume(0.5)
+esta_reproduciendo = False
+if esta_reproduciendo == False:
+    mixer.music.play(1000)
+    esta_reproduciendo = True
+
+
+
+#Mantengo la ventana de juego abierta
+flag_correr = True
+while flag_correr:
+    #Hago que el reloj limite los FPS
+    clock.tick(FPS)
+    x_relativa_fondo = x % fondo_img.get_rect().width
+    pantalla.blit(fondo_img, (x_relativa_fondo - fondo_img.get_rect().width,0))
+    print(x_relativa_fondo)
+    if x_relativa_fondo < constantes.ANCHO_VENTANA:
+        pantalla.blit(fondo_img, (x_relativa_fondo,0))
+        
+
+    x-=1
+    lista_eventos = pygame.event.get()
+    for evento in lista_eventos:
+        if evento.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+    lista_teclas = pygame.key.get_pressed()
+    if lista_teclas[pygame.K_LEFT]:
+        Buzo.mover_en_x(personaje_buzo,-5,800) 
+    if lista_teclas[pygame.K_RIGHT]:
+        Buzo.mover_en_x(personaje_buzo,5,800)
+    if lista_teclas[pygame.K_UP]:
+        Buzo.mover_en_y(personaje_buzo,-5,533)
+    if lista_teclas[pygame.K_DOWN]:
+        Buzo.mover_en_y(personaje_buzo,5,533)
+            
+    #BUZO-dibujar el rectangulo para ver cuanto ocupa
+    pygame.draw.rect(pantalla,constantes.AZUL,personaje_buzo["rect"])
+    pantalla.blit(personaje_buzo["imagen"],personaje_buzo["rect"]) #fundir la imagen en la ventana
+
+    if personaje_buzo["rect"].colliderect(coin["rect"]):
+        flag_moneda = False
+        
+    if flag_moneda:
+        #Moneda-dibujar el rectangulo para ver cuanto ocupa
+        pygame.draw.rect(pantalla, constantes.AZUL,coin["rect"])
+        pantalla.blit(coin["imagen"],coin["rect"]) #fundir la imagen en la ventana
+   
+
+    #Buzo.actualizar_pantalla(pantalla,personaje_buzo)
+    tiburon.actualizar_pantalla(pantalla,villano_tiburon)
+    #moneda.actualizar_pantalla(pantalla,coin)
+
+    pygame.display.flip()
+
+
+  
+    
+
+
+    
+
+
+
+
