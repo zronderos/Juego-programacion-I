@@ -1,0 +1,31 @@
+import pygame
+import constantes
+
+
+def crear_personaje(x,y,ancho,alto):
+    personaje = {}
+    personaje["imagen"] = pygame.image.load("buzo_img.png")
+    personaje["imagen"] = pygame.transform.scale(personaje["imagen"],(ancho,alto))
+    personaje["rect_pos"] = pygame.Rect(x,y,150,150)
+    personaje["rect"] = pygame.Rect((x+ancho/2)-10,y+90,111,111)
+    personaje["colorkey"] = personaje["imagen"].set_colorkey(constantes.AZUL)
+    
+
+    return personaje
+   
+
+def actualizar_pantalla(pantalla, personaje):
+    pantalla.blit(personaje["imagen"],personaje["rect_pos"])
+
+def mover_en_x(personaje, x, ancho):
+    nueva_x = personaje["rect_pos"].x + x
+    if nueva_x > 0 and nueva_x < ancho:
+        personaje["rect_pos"].x += x
+        personaje["rect"].x += x 
+
+def mover_en_y(personaje, y, alto):
+    nueva_y = personaje["rect_pos"].y + y
+    if nueva_y > 0 and nueva_y < alto:
+        personaje["rect_pos"].y += y
+        personaje["rect"].y += y 
+
